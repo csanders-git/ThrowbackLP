@@ -1,4 +1,4 @@
 <?php
 
-require( '/checkInstall.php' );
+require( 'cp/checkInstall.php' );
 

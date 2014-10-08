@@ -10,32 +10,7 @@ require_once('./includes/mysql.php');
         <title>Control Panel</title>      
     </head>
     <body>
-		<!-- Fixed navbar -->
-		<div class="navbar navbar-default" role="navigation" style="margin-top: 15px;">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-                                        <ul class="nav navbar-nav navbar-left">
-                                            <li><a href="#">Control Panel</a></li>
-                                        </ul>
-				</div>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
-						<a class="navbar-brand"><img style="margin-top: -15px; margin-left: 350px; height: 100px;" src="./images/tb.jpg"/></a>
-					</ul>
-					<ul class="nav navbar-nav navbar-right">
-                                                <li class="active"><a href="index.php">Home</a></li>
-						<li><a data-toggle="modal" href="metcreator.php" data-target="#myModal">MetCreator</a></li>
-						<li><a href='logout.php'>Logout</a></li>
-					</ul>
-				</div><!--/.nav-collapse -->
-			</div>
-		</div>
+		
 			<div id="results">
 			</div>    
 			

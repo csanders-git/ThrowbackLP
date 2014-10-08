@@ -79,10 +79,10 @@ class tbdb {
 	// ==================================================================
 	//	Basic Query	- see docs for more detail
 
-	function query($query) {
+	function query($query,$params) {
 		try{
 			$this->stmt = $this->DBH->prepare($query);
-			$this->stmt->execute();
+			$this->stmt->execute($params);
 			$this->results = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 			$this->stmt->closeCursor();
 		}catch (PDOException $e){

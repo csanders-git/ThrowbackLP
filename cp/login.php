@@ -4,7 +4,8 @@ session_start();
 session_destroy();
 session_start();
 
-require_once('./includes/mysql.php');
+//require_once('./includes/mysql.php');
+require_once('./tb-config.php');
 require_once('./includes/conf.php');
 
 $error = '';
@@ -16,8 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	$count = 0;
 
 	//FIND USERNAME AND PASSWORD
-	DB::query("SELECT * FROM users WHERE username = %s and password = %s", $username, $password);
-	$count = DB::count();
+	$results = $tbdb->query("SELECT * FROM users WHERE username = ? and password = ?", array($username, $password));	
+	$count = sizeof($count);
+
 
 	//IF ONE RESULT IS FOUND, THEN USERNAME AND PASSWORD ARE CORRECT
 	if ($count == 1) {
@@ -37,24 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     </head>
     <body>
 
-		<!-- Fixed navbar -->
-		<div class="navbar navbar-default" role="navigation"  style="margin-top: 15px;">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-                                        <ul class="nav navbar-nav navbar-left">
-                                            <li><a href="#">Control Panel</a></li>
-                                        </ul>
-					<a class="navbar-brand"><img style="margin-top: -15px; margin-left: 350px; height: 100px" src="./images/tb.jpg"/></a>
-				</div>
-			</div>
-		</div>      
-
 		<div id='login' class="container" style="max-width: 400px; margin: auto; ">
 			<form action='' class="form" method='post' style="margin-top: 20px;">
 <?php echo $error; ?>
@@ -70,10 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 //CHECK IF THERE IS A REFERRER
 				if (isset($_SERVER['HTTP_REFERER']))
-					$ref = $_SERVER['HTTP_REFERER'];
+					// HTTP_REFERER is user controlled and should be escaped
+					$ref = htmlspecialchars($_SERVER['HTTP_REFERER']);
 
 //INSERT IP ACCESSING THIS PAGE!
-				DB::insert('access', array('ipaddress' => $ipaddress, 'date' => $date, 'referrer' => $ref));
+				$tbdb->query("INSERT INTO access (ipaddress,date,referrer) VALUES (?,?,?)", array($ipaddress, $date,$ref));	
 				?>
 
 		</div>
