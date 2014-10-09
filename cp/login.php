@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 	//FIND USERNAME AND PASSWORD
 	$results = $tbdb->query("SELECT * FROM users WHERE username = ? and password = ?", array($username, $password));	
-	$count = sizeof($count);
+	$count = sizeof($results);
 
 
 	//IF ONE RESULT IS FOUND, THEN USERNAME AND PASSWORD ARE CORRECT

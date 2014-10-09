@@ -2,7 +2,8 @@
 ob_start();
 require_once('./includes/lock.php');
 require_once('./includes/conf.php');
-require_once('./includes/mysql.php');
+//require_once('./includes/mysql.php');
+require_once('./tb-config.php');
 ?>
 <?php if(!isset($_GET['reload'])):?><html>
     <head>
@@ -73,8 +74,9 @@ require_once('./includes/mysql.php');
 <?php endif;?>    
 
 <?php
-$result = DB::query("SELECT * FROM parameters ORDER BY `lastupdate` DESC");
-$count = DB::count();
+$result = $tbdb->query("SELECT * FROM parameters ORDER BY `lastupdate` DESC", Null);
+$count = sizeof($result);
+
 ?>
 		
 <?php
@@ -103,9 +105,8 @@ if ($count != 0) {
 
 	<?php
 	foreach ($result as $row) {
-		
-		  $result2 = DB::query("SELECT * FROM tasks WHERE id = %s AND status != %s", $row['id'], 2);
-		  $count = DB::count();
+		  $result2 = $tbdb->query("SELECT * FROM tasks WHERE id = ? AND status != ?", array($row['id'], 2));
+		  $count = sizeof($result2);
 
 		  //HIGHLIGHT THE ROW/IMPLANT IF TASKS ARE QUEUED UP
 		  if($count != 0)
