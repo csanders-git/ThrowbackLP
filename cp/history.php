@@ -1,18 +1,19 @@
 <?php
 require_once('./includes/lock.php');
 require_once('./includes/conf.php');
-require_once('./includes/mysql.php');
+require_once('./tb-config.php');
 
 if (!isset($_GET['numlimit']) or $_GET['numlimit'] < 1) {
 	$numlimit = 15;
 } else {
-
 	$numlimit = $_GET['numlimit'];
 }
-
+# We need to manually escape this value, fortunately its an int.
+$numlimit = intval($numlimit);
 $id = $_GET['id'];
-$result = DB::query('SELECT * FROM tasks WHERE id = %s ORDER BY opentime DESC LIMIT %d', $id, $numlimit);
-$count = DB::count();
+
+$result = $tbdb->query("SELECT * FROM tasks WHERE id = ? ORDER BY opentime DESC LIMIT $numlimit", array($id));
+$count = sizeof($result);
 ?>
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -43,41 +44,34 @@ $count = DB::count();
 
 <?php
 if ($count != 0) {
-	//while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	foreach ($result as $row) {
 		?>
 
-					<tr id='rowHeader'>
-						<td>
-							<p>
-					<?php
-					print $row['type'];
-					?>
-							</p>
-
-						</td>
-						<td>
-							<p><?php print $row['command']; ?></p>
-						</td>
-						<td>
-							<p><?php print $row['arguments']; ?></p>
-						</td>
-						<td>
-							<p>
-		<?php
-		$show = false;
-		if ($row['closetime'])
-			print date("M j, Y g:i a", $row['closetime']);
-		else
-			print '<button type="button" onclick="location.href=\'deletetask.php?name=' . $_GET['name'] . '&id=' . $row['id'] . '&time=' . $row['opentime'] . '\';" class="btn btn-default btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancel</button> Waiting for delivery..';
-		?>
-							</p>
-						</td>
-					</tr>
-
-					<tr id='rowData'>
-						<td colspan='4'>
-							<p>
+			<tr id='rowHeader'>
+				<td>
+					<p><?php print $row['type']; ?></p>
+				</td>
+				<td>
+					<p><?php print $row['command']; ?></p>
+				</td>
+				<td>
+					<p><?php print $row['arguments']; ?></p>
+				</td>
+				<td>
+					<p>
+						<?php
+						$show = false;
+						if ($row['closetime'])
+							print date("M j, Y g:i a", $row['closetime']);
+						else
+							print '<button type="button" onclick="location.href=\'deletetask.php?name=' . $_GET['name'] . '&id=' . $row['id'] . '&time=' . $row['opentime'] . '\';" class="btn btn-default btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancel</button> Waiting for delivery..';
+						?>
+					</p>
+				</td>
+			</tr>
+			<tr id='rowData'>
+				<td colspan='4'>
+					<p>
 		<?php
 		if ($row['results']) {
 			//print strlen($row['results']);
