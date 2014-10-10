@@ -40,7 +40,7 @@ if($step === "1"){
 			</tr>
 			<tr>
 				<th scope="row"><label for="passwd"> Password: </label></th>
-				<td><input name="passwd" id="passwd" type="password" size="25" value="" /></td>
+				<td><input name="passwd" id="passwd" type="password" size="25" value="" /></td>
 				<td> The password that will be used to login to ThrowBack </td>
 			</tr>
 		</table>

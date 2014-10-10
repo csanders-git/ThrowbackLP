@@ -83,12 +83,18 @@ if($step === "0"){
 	</form>';
 }elseif($step === "2"){ 
 	$failure = false;
-	echo '';
-	$dbname = trim( ( $_POST[ 'dbname' ] ) ); // HTML PURIFY
-	$user = trim( ( $_POST[ 'uname' ] ) ); // HTML PURIFY
-	$pass = trim( ( $_POST[ 'pwd' ] ) ); // HTML PURIFY
-	$dbhost = trim( ( $_POST[ 'dbhost' ] ) ); // HTML PURIFY
-	$prefix = trim( ( $_POST[ 'prefix' ] ) ); // HTML PURIFY
+	// We need to ensure that these cannot contain quotes, that would allow an attacker to escape out of our config script
+	$dbname = trim( htmlspecialchars(mb_convert_encoding($_POST[ 'dbname' ], 'UTF-8', 'UTF-8'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')); 
+	$user = trim( htmlspecialchars(mb_convert_encoding($_POST[ 'uname' ], 'UTF-8', 'UTF-8'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')); 
+	$pass = trim( htmlspecialchars(mb_convert_encoding($_POST[ 'pwd' ], 'UTF-8', 'UTF-8'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')); 
+	$dbhost = trim( htmlspecialchars(mb_convert_encoding($_POST[ 'dbhost' ], 'UTF-8', 'UTF-8'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')); 
+	$prefix = trim( htmlspecialchars(mb_convert_encoding($_POST[ 'prefix' ], 'UTF-8', 'UTF-8'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')); 
+
+	// Validate $prefix: it can only contain letters, numbers and underscores.
+	if ( preg_match( '|[^a-z0-9_]|i', $prefix ) ){
+		echo ("<h3><a href=\"install.php?step=1\">The prefix can only contain numbers,letters and underscores, Please go back and correct the error</a></h2>");
+		$failure = true;
+	}
 	try {
 		$DBH = new PDO("mysql:host=$dbhost;dbname=$dbname", $user, $pass);
 		$DBH->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
@@ -102,6 +108,8 @@ if($step === "0"){
 		$DBH = null;
 		$config_file = array(
 		"<?php\n",
+		"@ini_set( 'magic_quotes_runtime', 0 );\n",
+		"@ini_set( 'magic_quotes_sybase',  0 );\n",
 		"define('DB_NAME', '".$dbname."');\n",
 		"define('DB_USER', '".$user."');\n",
 		"define('DB_PASSWORD', '".$pass."');\n",
@@ -115,7 +123,8 @@ if($step === "0"){
 		"define('SECURE_AUTH_SALT', 'vx;2GYA73+1{yt$!TANdt1?C<I3; h<eJ|sbn8%f|_SRH:P7Y:ZU3imrX[uFg_D3');\n",
 		"define('LOGGED_IN_SALT',   'i;lR}JB+rLGjaR~V^GEFE32VLNz?IM>b`SiQ0-~3YWA8oc/2WO-1:/]Zc=O|)yfJ');\n",
 		"define('NONCE_SALT',       '|>>9![[3z{Bh^ rr.JdsgWDlLuKmkO<7D/BBKTb3J%yw`LR=z]; +x ClNYg6*=0');\n",
-		"require_once('includes/pdo.php');\n"
+		"require_once('includes/pdo.php');\n",
+		"require_once('includes/purify.php');\n"
 		);
 		$path_to_tb_config = 'tb-config.php';
 		// Check if our current folder is writable
@@ -128,9 +137,9 @@ if($step === "0"){
 			
 			echo("<b><table border=\"3\"><tr><th>");
 			foreach( $config_file as $line ) {
-				// This data should only be used in HTML context
+				// This data should only be used in HTML context, we haven't included purify yet so this will do.
+				$line = mb_convert_encoding($line, 'UTF-8', 'UTF-8');
 				echo(htmlspecialchars($line, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "<br>");
-				//echo($line."<br>"); // NEEDS ESCAPING
 			}
 			echo("</th></tr></table></b>");
 		}else{
