@@ -1,8 +1,8 @@
 <?php
 ob_start();
+require( './checkInstall.php' );
 require_once('./includes/lock.php');
 require_once('./includes/conf.php');
-//require_once('./includes/mysql.php');
 require_once('./tb-config.php');
 ?>
 <?php if(!isset($_GET['reload'])):?><html>
