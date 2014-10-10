@@ -17,7 +17,7 @@ $count = sizeof($result);
 ?>
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<h4 class="modal-title" id="myModalLabel">History for <?php print htmlspecialchars($_GET['name'];, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?> (<?php print "Current time is " . date("M j, Y g:i a", time()); ?>)</h4>
+	<h4 class="modal-title" id="myModalLabel">History for <?php print htmlspecialchars($_GET['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?> (<?php print "Current time is " . date("M j, Y g:i a", time()); ?>)</h4>
 </div>
 <div class="modal-body">
 	<div>
