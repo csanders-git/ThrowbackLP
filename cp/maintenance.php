@@ -2,8 +2,9 @@
 
 ob_start();
 require_once('./includes/lock.php');
-require_once('./includes/conf.php');
-require_once('./includes/mysql.php');
+#require_once('./includes/conf.php');
+#require_once('./includes/mysql.php');
+require_once('./tb-config.php');
 
 $error = 0;
 
@@ -70,7 +71,7 @@ if (isset($_POST['submit']) or count($_POST) > 1) {
 		$runas = 1;
 	else
 		$runas = 0;
-
+	$results = array();
 	foreach ($targets as $target) {
 		if ($error != 1) {
 			//Maintenace VS Scheduling - For notification messages consistency
@@ -88,34 +89,35 @@ if (isset($_POST['submit']) or count($_POST) > 1) {
 			if ($type == 5) {
 				//ADD TASK TO QUEUE
 				$opentime = time();
-				DB::insert('tasks', array('type' => '5', 'id' => $target, 'command' => $command, 'arguments' => '', 'key' => $key, 'status' => '0', 'results' => '', 'opentime' => $opentime, 'closetime' => ''));
+				$count = $tbdb->query_affected("INSERT INTO tasks (`db_id`, `type`, `id`, `command`, `arguments`, `runas`, `key`, `status`, `results`, `opentime`, `closetime`)  VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", array('5',$target,$command,'','',$key,'0','',$opentime,''));
 			}
 			//UPDATE PROJECT NAME
 			else if ($type == 20) {
-				DB::update('parameters', array('name' => $command), '`id`=%s', $target);
+				$count = $tbdb->query_affected("UPDATE parameters set 'name'=? where 'id'=?",array($command,$target));
+				//DB::update('parameters', array('name' => $command), '`id`=%s', $target);
 			}
 			//UPGRADE
 			else if ($type == 6) {
 				//ADD TASK TO QUEUE
 				$opentime = time();
-				DB::insert('tasks', array('type' => '6', 'id' => $target, 'command' => $command, 'arguments' => $arguments, 'key' => $key, 'status' => '0', 'results' => '', 'opentime' => $opentime, 'closetime' => ''));
+				$count = $tbdb->query_affected("INSERT INTO tasks (`db_id`, `type`, `id`, `command`, `arguments`, `runas`, `key`, `status`, `results`, `opentime`, `closetime`)  VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", array('6',$target,$command,'','',$key,'0','',$opentime,''));
 			}
 			//UNINSTALL
 			else if ($type == 7) {
 				//ADD TASK TO QUEUE
 				$opentime = time();
-				DB::insert('tasks', array('type' => '7', 'id' => $target, 'command' => $command, 'arguments' => '', 'key' => $key, 'status' => '0', 'results' => '', 'opentime' => $opentime, 'closetime' => ''));
+				$count = $tbdb->query_affected("INSERT INTO tasks (`db_id`, `type`, `id`, `command`, `arguments`, `runas`, `key`, `status`, `results`, `opentime`, `closetime`)  VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", array('7',$target,$command,'','',$key,'0','',$opentime,''));
 			}
 			//QUEUED TASK
 			else {
 				//INSERT THE NEW TASK INTO THE DB
 				//STATUS STARTS AT 0, GOES TO 1 AFTER IT IS SENT, THEN TO 2 AFTER THE RESULT IS RETURNED
-				$sql = DB::insert('tasks', array('type' => $type, 'id' => $target, 'command' => $command, 'arguments' => $arguments, 'runas' => $runas, 'key' => $key, 'status' => '0', 'results' => '', 'opentime' => $opentime, 'closetime' => ''));
+				$count = $tbdb->query_affected("INSERT INTO tasks (`db_id`, `type`, `id`, `command`, `arguments`, `runas`, `key`, `status`, `results`, `opentime`, `closetime`)  VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", array($type,$target,$command,'',$runas,$key,'0','',$opentime,''));
 				$category = 'schedule';
 			}
 
-
-			if (DB::affectedRows() != 0) {
+			if ($count != 0) {
+				
 				//print "<p style='text-align:center; font-weight:bold'>Target Updated!</p>";
 				if ($category == 'maintenance')
 					print "<p class=\"alert alert-info\" style='text-align:center; font-weight:bold'>Target " . $target . " updated!</p>";

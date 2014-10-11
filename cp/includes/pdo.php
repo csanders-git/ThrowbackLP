@@ -74,18 +74,30 @@ class tbdb {
 		}
 	}
 
-
+	function query_affected($query,$params) {
+		try{
+			$this->stmt = $this->DBH->prepare($query);
+			$this->stmt->execute($params);
+			$this->count = $this->stmt->rowCount();
+		}catch (PDOException $e){
+			//echo $e->getMessage();
+			return False;
+		}
+		return $this->count;
+	}
 
 	// ==================================================================
 	//	Basic Query	- see docs for more detail
 
 	function query($query,$params) {
 		try{
+		//	echo $query;
 			$this->stmt = $this->DBH->prepare($query);
 			$this->stmt->execute($params);
 			$this->results = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 			$this->stmt->closeCursor();
 		}catch (PDOException $e){
+			//echo $e->getMessage();
 			return False;
 		}
 		return $this->results;

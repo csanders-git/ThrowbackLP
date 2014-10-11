@@ -52,9 +52,11 @@ if($step === "2"){
 
 echo("Adding table: 'access':");
 $a = $tbdb->query("CREATE TABLE IF NOT EXISTS `access` (
+  `db_id` INT(255) NOT NULL AUTO_INCREMENT,
   `ipaddress` varchar(50) NOT NULL,
   `date` varchar(50) NOT NULL,
-  `referrer` varchar(100) NOT NULL
+  `referrer` varchar(100) NOT NULL,
+  PRIMARY KEY (`db_id`) 
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;", Null);
 echo("<font color='green'> Done</font><br>");
 
@@ -75,15 +77,18 @@ echo("<font color='green'> Done</font><br>");
 
 echo("Adding table: 'targets':");
 $c = $tbdb->query("CREATE TABLE IF NOT EXISTS `targets` (
+  `db_id` INT(255) NOT NULL AUTO_INCREMENT,
   `id` varchar(255) NOT NULL,
   `externalip` varchar(50) NOT NULL,
   `hostname` varchar(255) NOT NULL,
-  `lastupdate` varchar(50) NOT NULL
+  `lastupdate` varchar(50) NOT NULL,
+  PRIMARY KEY (`db_id`) 
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;",Null);
 echo("<font color='green'> Done</font><br>");
 
 echo("Adding table: 'tasks':");
 $d = $tbdb->query("CREATE TABLE IF NOT EXISTS `tasks` (
+  `db_id` INT(255) NOT NULL AUTO_INCREMENT,
   `type` varchar(10) NOT NULL,
   `id` varchar(255) NOT NULL,
   `command` varchar(500) NOT NULL,
@@ -93,7 +98,8 @@ $d = $tbdb->query("CREATE TABLE IF NOT EXISTS `tasks` (
   `status` varchar(25) NOT NULL,
   `results` mediumtext NOT NULL,
   `opentime` varchar(50) NOT NULL,
-  `closetime` varchar(50) NOT NULL
+  `closetime` varchar(50) NOT NULL,
+  PRIMARY KEY (`db_id`) 
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;", Null);
 echo("<font color='green'> Done</font><br>");
 
