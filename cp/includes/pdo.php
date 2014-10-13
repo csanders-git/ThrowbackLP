@@ -80,7 +80,7 @@ class tbdb {
 			$this->stmt->execute($params);
 			$this->count = $this->stmt->rowCount();
 		}catch (PDOException $e){
-			//echo $e->getMessage();
+			echo $e->getMessage();
 			return False;
 		}
 		return $this->count;

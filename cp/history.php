@@ -12,12 +12,12 @@ if (!isset($_GET['numlimit']) or $_GET['numlimit'] < 1) {
 $numlimit = intval($numlimit);
 $id = $_GET['id'];
 
-$result = $tbdb->query("SELECT * FROM tasks WHERE id = ? ORDER BY opentime DESC LIMIT $numlimit", array($id));
+$result = $tbdb->query("SELECT * FROM tasks WHERE `id`= ? ORDER BY opentime DESC LIMIT $numlimit", array($id));
 $count = sizeof($result);
 ?>
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<h4 class="modal-title" id="myModalLabel">History for <?php print htmlspecialchars($_GET['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?> (<?php print "Current time is " . date("M j, Y g:i a", time()); ?>)</h4>
+	<h4 class="modal-title" id="myModalLabel">History for <?php print $_GET['name'] ?> (<?php print "Current time is " . date("M j, Y g:i a", time()); ?>)</h4>
 </div>
 <div class="modal-body">
 	<div>
@@ -30,8 +30,8 @@ $count = sizeof($result);
 				<option value='9999' <?php if ($numlimit == 9999) print 'selected'; ?>>Show All</option>
 			</select>
 			<?php // HTML PURFIY ?>
-			<input type='hidden' name='id' id='id' value='<?php print $_GET['id']; ?>'>
-			<input type='hidden' name='name' id='name' value='<?php print $_GET['name']; ?>'>
+			<input type='hidden' name='id' id='id' value='<?php print $purifier->purify($_GET['id']); ?>'>
+			<input type='hidden' name='name' id='name' value='<?php print $purifier->purify($_GET['name']); ?>'>
 			<input type='hidden' name='action' value='show_history'>                    
 		</form>
 		<table class="table table-bordered">
@@ -49,13 +49,13 @@ if ($count != 0) {
 
 			<tr id='rowHeader'>
 				<td>
-					<p><?php print $row['type']; ?></p>
+					<p><?php print $purifier->purify($row['type']); ?></p>
 				</td>
 				<td>
-					<p><?php print $row['command']; ?></p>
+					<p><?php print $purifier->purify($row['command']); ?></p>
 				</td>
 				<td>
-					<p><?php print $row['arguments']; ?></p>
+					<p><?php print $purifier->purify($row['arguments']); ?></p>
 				</td>
 				<td>
 					<p>
@@ -64,7 +64,7 @@ if ($count != 0) {
 						if ($row['closetime'])
 							print date("M j, Y g:i a", $row['closetime']);
 						else
-							print '<button type="button" onclick="location.href=\'deletetask.php?name=' . $_GET['name'] . '&id=' . $row['id'] . '&time=' . $row['opentime'] . '\';" class="btn btn-default btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancel</button> Waiting for delivery..';
+							print '<button type="button" onclick="location.href=\'deletetask.php?name=' . $purifier->purify($_GET['name']) . '&id=' . $purifier->purify($row['id']) . '&time=' . $purifier->purify($row['opentime']) . '\';" class="btn btn-default btn-xs btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancel</button> Waiting for delivery..';
 						?>
 					</p>
 				</td>

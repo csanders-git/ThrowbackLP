@@ -133,14 +133,15 @@ if ($count != 0) {
 									print '<span style="margin-right: 10px;font-size: 25px;" data-toggle="tooltip" data-placement="top" title="Direct Connection" class="glyphicon glyphicon-transfer"></span>';
 								?>
 								</td>
-								<td><?php print $row['version']; ?></td>
-								<td><?php print $row['ipaddress']; ?></td>
-								<td width="230"><span data-type="text" class="target_name" data-pk="<?php print $row['id']; ?>"><?php print $row['name']; ?></span></td>
-								<td><?php print $row['cbperiod']; ?> minutes</td>
+								<td><?php print $purifier->purify($row['version']); ?></td>
+								<td><?php print $purifier->purify($row['ipaddress']); ?></td>
+								<td width="230"><span data-type="text" class="target_name" data-pk="<?php echo $purifier->purify($row['id']); ?>"><?php echo $purifier->purify($row['name']); ?></span></td>
+								<td><?php print $purifier->purify($row['cbperiod']); ?> minutes</td>
 								<td><?php print date("M j, Y g:i a", $row['lastupdate']); ?></td>
 								<td>
-									<a style="text-decoration: none; margin-right: 10px;" data-toggle="modal" role="button" onclick="clearSelection(true);reloadContent();" class="btn btn-success btn-sm" id="history_<?php echo $row['id']; ?>" href="history.php?name=<?php print $row['name']; ?>&id=<?php print $row['id']; ?>&numlimit=<?php print (int) @$_GET['numlimit']; ?>" data-target="#historyModal"><span class="glyphicon glyphicon-list-alt"></span> History</a>
-									<a style="text-decoration: none; margin-right: 10px;" data-toggle="modal" role="button" onclick="clearSelection(true);reloadContent();" class="btn btn-danger btn-sm" id="radar_<?php echo $row['id']; ?>" href="radar.php?name=<?php print $row['name']; ?>&id=<?php print $row['id']; ?>&numlimit_r=<?php print (int) @$_GET['numlimit_r']; ?>" data-target="#radarModal"><span class="glyphicon glyphicon-screenshot"></span> Radar</a>
+									
+									<a style="text-decoration: none; margin-right: 10px;" data-toggle="modal" role="button" onclick="clearSelection(true);reloadContent();" class="btn btn-success btn-sm" id="history_<?php echo $purifier->purify($row['id']); ?>" href="history.php?name=<?php print htmlspecialchars($purifier->purify($row['name']),ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>&id=<?php print $purifier->purify($row['id']); ?>&numlimit=<?php print (int) @$_GET['numlimit']; ?>" data-target="#historyModal"><span class="glyphicon glyphicon-list-alt"></span> History</a>
+									<a style="text-decoration: none; margin-right: 10px;" data-toggle="modal" role="button" onclick="clearSelection(true);reloadContent();" class="btn btn-danger btn-sm" id="radar_<?php echo $purifier->purify($row['id']); ?>" href="radar.php?name=<?php print htmlspecialchars($purifier->purify($row['name']),ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>&id=<?php print $purifier->purify($row['id']); ?>&numlimit_r=<?php print (int) @$_GET['numlimit_r']; ?>" data-target="#radarModal"><span class="glyphicon glyphicon-screenshot"></span> Radar</a>
 								</td>
 								</tr>
 		<?php

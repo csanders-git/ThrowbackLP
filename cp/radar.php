@@ -1,22 +1,23 @@
 <?php
 require_once('./includes/lock.php');
 require_once('./includes/conf.php');
-require_once('./includes/mysql.php');
+require_once('./tb-config.php');
 
 if (!isset($_GET['numlimit_r']) or $_GET['numlimit_r'] < 1) {
 	$numlimit = 10;
 } else {
-
-	$numlimit = $_GET['numlimit_r'];
+	// We must ensure that this is an int otherwise we run the risk of SQLi
+	$numlimit = intval($_GET['numlimit_r']);
 }
 
 $id = $_GET['id'];
-$result = DB::query('SELECT * FROM targets WHERE `id`=%s ORDER BY `lastupdate` DESC LIMIT %i', $id, $numlimit);
-$count = DB::count();
+
+$result = $tbdb->query("SELECT * FROM targets WHERE `id`=? ORDER BY `lastupdate` DESC LIMIT $numlimit",array($id));
+$count = sizeof($result);
 ?>
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<h4 class="modal-title" id="myModalLabel">Callback History for <?php print $_GET['name']; ?> (<?php print "Current time is " . date("M j, Y g:i a", time()); ?>)</h4>
+	<h4 class="modal-title" id="myModalLabel">Callback History for <?php print $purifier->purify($_GET['name']); ?> (<?php print "Current time is " . date("M j, Y g:i a", time()); ?>)</h4>
 </div>
 <div class="modal-body">
 	<div>
@@ -29,8 +30,8 @@ $count = DB::count();
 				<option value='9999' <?php if ($numlimit == 9999) print 'selected'; ?>>Show All</option>
 			</select>
 
-			<input type='hidden' name='id' id='id' value='<?php print $_GET['id']; ?>'>
-			<input type='hidden' name='name' id='name' value='<?php print $_GET['name']; ?>'>
+			<input type='hidden' name='id' id='id' value='<?php print $purifier->purify($_GET['id']); ?>'>
+			<input type='hidden' name='name' id='name' value='<?php print $purifier->purify($_GET['name']); ?>'>
 			<input type='hidden' name='action' value='show_radar'>                    
 		</form>
 		<table class="table table-bordered">
@@ -48,13 +49,13 @@ if ($count != 0) {
 
 					<tr>
 						<td>
-							<p><?php print $row['id']; ?></p>
+							<p><?php print $purifier->purify($row['id']); ?></p>
 						</td>
 						<td>
-							<p><?php print $row['externalip']; ?></p>
+							<p><?php print $purifier->purify($row['externalip']); ?></p>
 						</td>
 						<td>
-							<p><?php print $row['hostname']; ?></p>
+							<p><?php print $purifier->purify($row['hostname']); ?></p>
 						</td>
 						<td>
 							<p><?php print date("M j, Y g:i a", (int) $row['lastupdate']); ?></p>

@@ -120,9 +120,9 @@ if (isset($_POST['submit']) or count($_POST) > 1) {
 				
 				//print "<p style='text-align:center; font-weight:bold'>Target Updated!</p>";
 				if ($category == 'maintenance')
-					print "<p class=\"alert alert-info\" style='text-align:center; font-weight:bold'>Target " . $target . " updated!</p>";
+					print "<p class=\"alert alert-info\" style='text-align:center; font-weight:bold'>Target " . $purifier->purify($target) . " updated!</p>";
 				else
-					print "<p class=\"alert alert-info\" style='text-align:center; font-weight:bold'>Task has been queued for " . $target . "!</p>";
+					print "<p class=\"alert alert-info\" style='text-align:center; font-weight:bold'>Task has been queued for " . $purifier->purify($target) . "!</p>";
 			}
 			else {
 				//print "<p style='text-align:center; font-weight:bold'>An error occurred updating the target!</p>";
